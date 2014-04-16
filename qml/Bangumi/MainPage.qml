@@ -4,6 +4,10 @@ import com.nokia.symbian 1.1
 MyPage {
     id: mainPage;
 
+    property alias collectionBox: cBox;
+
+    title: tabGroup.currentTab.title;
+
     tools: ToolBarLayout {
         ToolButton {
             iconSource: "toolbar-back";
@@ -60,6 +64,10 @@ MyPage {
         }
     }
 
+    CollectionBox {
+        id: cBox;
+    }
+
     TabBar {
         id: tabBar;
         z: tabGroup.z + 1;
@@ -70,7 +78,6 @@ MyPage {
         TabButton {
             iconSource: "gfx/calendar.png";
             tab: cldPage;
-            onClicked: cldPage.positionView();
         }
         TabButton {
             iconSource: "gfx/content.png";

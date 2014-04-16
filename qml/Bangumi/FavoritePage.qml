@@ -21,8 +21,11 @@ MyPage {
             if (Array.isArray(list)){
                 listModel.clear();
                 var collections = [];
-                var parse = function(value){
-                    var weekdays = ["一","二","三","四","五","六","日"];
+                var weekdays = ["一","二","三","四","五","六","日"];
+                var todayId = new Date().getDay();
+                var i = 0;
+
+                var parse = function(value, today){
                     var subject = value.subject;
                     var prop = {
                         id: subject.id,
@@ -31,28 +34,53 @@ MyPage {
                         progress_value: Math.min(Math.max(value.ep_status / subject.eps, 0), 1),
                         day: "星期"+weekdays[subject.air_weekday-1],
                         image_grid: subject.images.grid,
-                        watching_count: subject.collection.doing
+                        watching_count: subject.collection.doing,
+                        flag: today ? "今日放映" : "其它"
                     }
                     listModel.append(prop);
                     collections.push(subject.id);
                 }
-                list.forEach(parse);
+
+                for (i in list){
+                    if (list[i].subject.air_weekday == todayId){
+                        parse(list[i], true);
+                    }
+                }
+                for (i in list){
+                    if (list[i].subject.air_weekday != todayId){
+                        parse(list[i], false);
+                    }
+                }
+
                 signalCenter.collections = collections;
             }
         }
         core().api(url, true, null, get, callback);
     }
 
+    title: "收藏列表";
+
     ListView {
         id: view;
         anchors.fill: parent;
-        pressDelay: 100;
+        pressDelay: 50;
         model: ListModel {
             id: listModel;
+        }
+        section {
+            property: "flag";
+            delegate: ListHeading {
+                ListItemText {
+                    anchors.fill: parent.paddingItem;
+                    text: section;
+                    role: "Heading";
+                }
+            }
         }
         delegate: ListItem {
             id: root;
             implicitHeight: 96;
+            onPressAndHold: signalCenter.createCollectBox(model.id, name);
 
             Image {
                 id: logo;
@@ -119,5 +147,9 @@ MyPage {
                 text: watching_count + "人在看";
             }
         }
+    }
+
+    ScrollDecorator {
+        flickableItem: view;
     }
 }

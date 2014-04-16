@@ -5,8 +5,12 @@ import QtWebKit 1.0
 MyPage {
     id: page;
 
+    property bool firstStart: true;
     function initialize(){
-        webView.url = "http://bgm.tv/m";
+        if (firstStart){
+            firstStart = false;
+            getlist();
+        }
     }
 
     function getlist(){
@@ -17,6 +21,8 @@ MyPage {
             webView.url = mobileUrl;
         }
     }
+
+    title: "超展开";
 
     Flickable {
         id: view;

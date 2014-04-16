@@ -39,6 +39,18 @@ PageStackWindow {
         function isCollected(id){
             return collections.indexOf(id) >= 0;
         }
+
+        function createCollectBox(id, name){
+            var c = mainPage.collectionBox;
+            c.sid = id;
+            c.titleText = name;
+            c.getDetail();
+            c.open();
+        }
+    }
+
+    StatusPaneText {
+        id: statusPaneText;
     }
 
     InfoBanner {

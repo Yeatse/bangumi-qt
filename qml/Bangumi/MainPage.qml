@@ -93,12 +93,15 @@ MyPage {
         currentTab: favPage;
         FavoritePage {
             id: favPage;
+            pageStack: mainPage.pageStack;
         }
         CalendarPage {
             id: cldPage;
+            pageStack: mainPage.pageStack;
         }
         ContentPage {
             id: cntPage;
+            pageStack: mainPage.pageStack;
         }
     }
 }

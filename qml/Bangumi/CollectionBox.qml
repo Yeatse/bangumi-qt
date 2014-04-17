@@ -10,15 +10,15 @@ CommonDialog {
     property variant detail: null;
 
     function getDetail(){
+        detail = null;
         if (sid != ""){
-            detail = null;
             loading = true;
             var url = "/collection/"+sid;
             var callback = function(obj){
                 loading = false;
                 if (obj != null){
                     detail = obj;
-                    if (typeof(obj.status) == "object"){
+                    if (obj.status != null){
                         buttonRow.checkedButton = buttonRow.children[obj.status.id-1];
                         ratingStarRow.ratingValue = obj.rating;
                         tagField.text = obj.tag.join(",");
@@ -48,7 +48,6 @@ CommonDialog {
             var callback = function(){
                 statusPaneText.loading = false;
                 favPage.getlist();
-                cldPage.firstStart = true;
             }
             core().api(url, true, post, {}, callback);
         }

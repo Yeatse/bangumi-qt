@@ -27,13 +27,17 @@ MyPage {
 
                 var parse = function(value, today){
                     var subject = value.subject;
+                    var imageGrid = "";
+                    if (subject.images != null){
+                        imageGrid = subject.images.grid;
+                    }
                     var prop = {
                         id: subject.id,
                         name: subject.name_cn,
                         progress_string: value.ep_status + "/" + subject.eps,
                         progress_value: Math.min(Math.max(value.ep_status / subject.eps, 0), 1),
                         day: "星期"+weekdays[subject.air_weekday-1],
-                        image_grid: subject.images.grid,
+                        image_grid: imageGrid,
                         watching_count: subject.collection.doing,
                         flag: today ? "今日放映" : "其它"
                     }
@@ -53,6 +57,8 @@ MyPage {
                 }
 
                 signalCenter.collections = collections;
+                // TODO: ugly hack, will be fixed later
+                cldPage.firstStart = true;
             }
         }
         core().api(url, true, null, get, callback);
@@ -64,6 +70,7 @@ MyPage {
         id: view;
         anchors.fill: parent;
         pressDelay: 50;
+        cacheBuffer: view.height;
         model: ListModel {
             id: listModel;
         }
@@ -81,6 +88,7 @@ MyPage {
             id: root;
             implicitHeight: 96;
             onPressAndHold: signalCenter.createCollectBox(model.id, name);
+            onClicked: pageStack.push(Qt.resolvedUrl("SubjectPage.qml"), { sid: model.id })
 
             Image {
                 id: logo;
@@ -135,7 +143,7 @@ MyPage {
                     bottom: root.paddingItem.bottom;
                 }
                 role: "SubTitle";
-                text: "放映日："+day;
+                text: "放送星期："+day;
             }
 
             ListItemText {

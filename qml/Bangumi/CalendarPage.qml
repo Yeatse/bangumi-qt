@@ -22,11 +22,15 @@ MyPage {
             if (Array.isArray(list)){
                 var resultArray = [];
                 var parseItem = function(value){
+                    var imageGrid = "";
+                    if (value.images != null){
+                        imageGrid = value.images.grid;
+                    }
                     var prop = {
                         id: value.id,
                         name: value.name,
                         name_cn: value.name_cn || value.name,
-                        image_grid: value.images.grid,
+                        image_grid: imageGrid,
                         watching_count: value.collection.doing,
                         air_date: value.air_date,
                         air_weekday: value.air_weekday,
@@ -66,6 +70,7 @@ MyPage {
             fill: parent; topMargin: listHeading.height;
         }
         pressDelay: 50;
+        cacheBuffer: view.height;
         model: ListModel {
             id: listModel;
         }
@@ -73,6 +78,7 @@ MyPage {
             id: root;
             implicitHeight: 96;
             onPressAndHold: signalCenter.createCollectBox(model.id, name_cn);
+            onClicked: pageStack.push(Qt.resolvedUrl("SubjectPage.qml"), { sid: model.id })
 
             Image {
                 id: logo;
@@ -126,7 +132,7 @@ MyPage {
                     left: jpname.left; bottom: root.paddingItem.bottom;
                 }
                 role: "SubTitle";
-                text: "首映日期："+air_date;
+                text: "放送开始："+air_date;
             }
 
             ListItemText {
@@ -149,7 +155,7 @@ MyPage {
 
     SelectionDialog {
         id: weekdaySelector;
-        titleText: "选择放映日期";
+        titleText: "选择放送星期";
         model: ["星期一","星期二","星期三","星期四","星期五","星期六","星期日"];
         onAccepted: {
             listHeadingText.text = model[selectedIndex];

@@ -45,7 +45,7 @@ MyPage {
                 }
                 list.forEach(parseDay);
                 itemList = resultArray;
-                weekdaySelector.selectedIndex = new Date().getDay() - 1;
+                weekdaySelector.selectedIndex = (new Date().getDay() + 6)%7;
                 weekdaySelector.accepted();
             }
         }

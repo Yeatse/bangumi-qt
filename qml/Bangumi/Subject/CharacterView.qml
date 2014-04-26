@@ -26,7 +26,8 @@ Item {
                     image_grid: imageGrid,
                     name: value.name,
                     name_cn: value.name_cn,
-                    role_name: value.role_name
+                    role_name: value.role_name,
+                    url: value.url
                 }
                 crtModel.append(prop);
             }
@@ -44,12 +45,13 @@ Item {
         anchors {
             fill: parent; topMargin: viewHeader.height;
         }
+        pressDelay: 150;
         clip: true;
         model: ListModel { id: crtModel; }
         delegate: AbstractItem {
             id: listItem;
             implicitHeight: 96;
-            onClicked: Qt.openUrlExternally(url);
+            onClicked: signalCenter.enterUrl(url);
 
             Image {
                 id: logo;
@@ -106,5 +108,9 @@ Item {
                 text: role_name;
             }
         }
+    }
+
+    ScrollDecorator {
+        flickableItem: view;
     }
 }

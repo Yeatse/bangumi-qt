@@ -11,6 +11,7 @@ Item {
         }
         nameLabel.text = obj.name;
         namecnLabel.text = obj.name_cn||obj.name;
+        page.title = namecnLabel.text;
         airDateText.text = "放送开始："+obj.air_date;
         airWeekText.text = "放送星期：星期"+weekdays[obj.air_weekday-1];
         summaryLabel.text = obj.summary;
@@ -39,6 +40,13 @@ Item {
         width: 100;
         height: 141;
         sourceSize: "100x141";
+
+        Image {
+            anchors.centerIn: parent;
+            source: "../gfx/placeholder.png";
+            sourceSize: "100x100";
+            visible: logoImage.status != Image.Ready;
+        }
     }
 
     Column {
@@ -117,9 +125,11 @@ Item {
             right: parent.right; bottom: parent.bottom;
             margins: platformStyle.paddingLarge;
         }
+        pressDelay: 150;
         clip: true;
         contentWidth: width;
         contentHeight: summaryLabel.height;
+        flickableDirection: Flickable.VerticalFlick;
         Label {
             id: summaryLabel;
             width: parent.width;

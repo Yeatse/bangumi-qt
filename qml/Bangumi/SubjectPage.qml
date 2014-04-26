@@ -23,9 +23,12 @@ MyPage {
                     subjectView.loadDetail(obj);
                     episodeView.loadDetail(obj);
                     characterView.loadDetail(obj);
+                    staffView.loadDetail(obj);
+                    commentView.loadDetail(obj);
+                    coldDown.start();
                 }
             }
-            core().api(url, true, null, get, callback);
+            core().api(url, false, null, get, callback);
         }
     }
 
@@ -34,6 +37,17 @@ MyPage {
             iconSource: "toolbar-back";
             onClicked: pageStack.pop();
         }
+        ToolButton {
+            iconSource: "gfx/favourite.png";
+            enabled: dataReady;
+            onClicked: signalCenter.createCollectBox(sid, title);
+        }
+    }
+
+    Timer {
+        id: coldDown;
+        interval: 200;
+        onTriggered: boxView.loadDetail();
     }
 
     ListModel { id: episodeModel; }
@@ -45,9 +59,12 @@ MyPage {
         highlightRangeMode: ListView.StrictlyEnforceRange;
         snapMode: ListView.SnapOneItem;
         orientation: ListView.Horizontal;
-        boundsBehavior: Flickable.StopAtBounds;
+        boundsBehavior: Flickable.DragOverBounds;
+        pressDelay: 150;
+
         model: VisualItemModel {
             SubjectView { id: subjectView; }
+            BoxView { id: boxView; }
             EpisodeView { id: episodeView; }
             CharacterView { id: characterView; }
             StaffView { id: staffView; }
@@ -56,6 +73,7 @@ MyPage {
     }
 
     Row {
+        id: indicatorRow;
         anchors {
             horizontalCenter: parent.horizontalCenter;
             bottom: parent.bottom; bottomMargin: platformStyle.paddingSmall;

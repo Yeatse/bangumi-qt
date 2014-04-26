@@ -38,11 +38,12 @@ Item {
         anchors {
             fill: parent; topMargin: viewHeader.height;
         }
+        pressDelay: 150;
         clip: true;
         model: episodeModel;
         delegate: AbstractItem {
             id: listItem;
-            onClicked: Qt.openUrlExternally(url);
+            onClicked: signalCenter.enterUrl(url);
             Column {
                 anchors {
                     left: listItem.paddingItem.left;

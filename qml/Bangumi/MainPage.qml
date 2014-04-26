@@ -38,6 +38,7 @@ MyPage {
         }
         ToolButton {
             iconSource: "toolbar-menu";
+            onClicked: mainMenu.open();
         }
     }
 
@@ -102,6 +103,18 @@ MyPage {
         ContentPage {
             id: cntPage;
             pageStack: mainPage.pageStack;
+        }
+    }
+
+    Menu {
+        id: mainMenu;
+        MenuLayout {
+            MenuItem {
+                text: "设置";
+            }
+            MenuItem {
+                text: "关于";
+            }
         }
     }
 }

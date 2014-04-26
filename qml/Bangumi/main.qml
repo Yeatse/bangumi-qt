@@ -47,6 +47,10 @@ PageStackWindow {
             c.getDetail();
             c.open();
         }
+
+        function enterUrl(url){
+            pageStack.push(Qt.resolvedUrl("WebPage.qml"), { url: url });
+        }
     }
 
     StatusPaneText {

@@ -5,24 +5,16 @@ import QtWebKit 1.0
 MyPage {
     id: page;
 
-    property bool firstStart: true;
-    function initialize(){
-        if (firstStart){
-            firstStart = false;
-            getlist();
+    property alias url: webView.url;
+
+    title: webView.title;
+
+    tools: ToolBarLayout {
+        ToolButton {
+            iconSource: "toolbar-back";
+            onClicked: pageStack.pop();
         }
     }
-
-    function getlist(){
-        var mobileUrl = "http://bgm.tv/m";
-        if (webView.url == mobileUrl){
-            webView.reload.trigger();
-        } else {
-            webView.url = mobileUrl;
-        }
-    }
-
-    title: "超展开";
 
     FlickableWebView {
         id: webView;

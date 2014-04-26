@@ -22,7 +22,7 @@ MyPage {
                 listModel.clear();
                 var collections = [];
                 var weekdays = ["一","二","三","四","五","六","日"];
-                var todayId = new Date().getDay();
+                var todayId = (new Date().getDay()+6)%7+1;
                 var i = 0;
 
                 var parse = function(value, today){

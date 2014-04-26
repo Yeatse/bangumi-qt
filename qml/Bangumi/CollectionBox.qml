@@ -7,17 +7,17 @@ CommonDialog {
 
     property string sid;
     property bool loading: false;
-    property variant detail: null;
+    property bool dataReady: false;
 
     function getDetail(){
-        detail = null;
+        dataReady = false;
         if (sid != ""){
             loading = true;
             var url = "/collection/"+sid;
             var callback = function(obj){
                 loading = false;
                 if (obj != null){
-                    detail = obj;
+                    dataReady = true;
                     if (obj.status != null){
                         buttonRow.checkedButton = buttonRow.children[obj.status.id-1];
                         ratingStarRow.ratingValue = obj.rating;
@@ -36,7 +36,7 @@ CommonDialog {
     }
 
     function update(){
-        if (sid != "" && detail != null){
+        if (sid != "" && dataReady){
             statusPaneText.loading = true;
             var url = "/collection/"+sid+"/update";
             var post = {
@@ -85,7 +85,7 @@ CommonDialog {
             contentWidth: width;
             contentHeight: contentCol.height;
             boundsBehavior: Flickable.StopAtBounds;
-            visible: !loading && detail != null;
+            visible: !loading && dataReady;
 
             Column {
                 id: contentCol;

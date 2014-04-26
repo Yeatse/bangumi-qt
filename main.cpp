@@ -1,12 +1,15 @@
 #include <QtGui/QApplication>
 #include <QtGui/QSplashScreen>
 #include <QtDeclarative/QDeclarativeContext>
+#include <QtDeclarative/QDeclarativeEngine>
 #include <QtWebKit/QWebSettings>
 #include <QtNetwork/QNetworkProxy>
+#include <QtNetwork/QNetworkAccessManager>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QTranslator>
 #include "qmlapplicationviewer.h"
 #include "nativefunc.h"
+#include "bnetworkcookiejar.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
@@ -40,8 +43,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     QmlApplicationViewer viewer;
 
-    NativeFunc nativeFunc;
-    viewer.rootContext()->setContextProperty("utility", &nativeFunc);
+    NativeFunc* nativeFunc = new NativeFunc(app.data());
+    viewer.rootContext()->setContextProperty("utility", nativeFunc);
+    BNetworkCookieJar* cookieJar = new BNetworkCookieJar(app.data());
+    viewer.engine()->networkAccessManager()->setCookieJar(cookieJar);
 
     QWebSettings::globalSettings()->setUserStyleSheetUrl(QUrl::fromLocalFile("qml/js/theme.css"));
 

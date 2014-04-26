@@ -8,10 +8,12 @@ QT += network webkit
 INCLUDEPATH += src
 
 HEADERS += \
-    nativefunc.h
+    nativefunc.h \
+    bnetworkcookiejar.h
 
 SOURCES += main.cpp \
-    nativefunc.cpp
+    nativefunc.cpp \
+    bnetworkcookiejar.cpp
 
 TRANSLATIONS += i18n/Bangumi_zh.ts
 RESOURCES += Bangumi-res.qrc

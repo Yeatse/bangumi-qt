@@ -38,6 +38,10 @@ MyPage {
             onClicked: pageStack.pop();
         }
         ToolButton {
+            iconSource: "toolbar-refresh";
+            onClicked: getSubject();
+        }
+        ToolButton {
             iconSource: "gfx/favourite.png";
             enabled: dataReady;
             onClicked: signalCenter.createCollectBox(sid, title);

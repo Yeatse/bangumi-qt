@@ -35,6 +35,9 @@ MyPage {
         }
         ToolButton {
             iconSource: "toolbar-search";
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
+            }
         }
         ToolButton {
             iconSource: "toolbar-menu";

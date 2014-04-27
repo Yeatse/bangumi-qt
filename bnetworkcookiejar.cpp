@@ -30,7 +30,7 @@ void BNetworkCookieJar::save()
     QList<QNetworkCookie> list = allCookies();
     QByteArray data;
     foreach (QNetworkCookie cookie, list) {
-        if (!cookie.isSessionCookie()){
+        if (cookie.domain().endsWith("bgm.tv")){
             data.append(cookie.toRawForm());
             data.append("\n");
         }

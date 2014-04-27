@@ -15,11 +15,20 @@ Item {
         var get = { "subject_id": sid };
         var callback = function(obj){
             loading = false;
+            // reset
+            var i, prop = {
+                view_status_id: 0,
+                view_status_name: ""
+            };
+            for (i=0; i<episodeModel.count; i++){
+                episodeModel.set(i, prop);
+            }
+            // set data
             if (obj != null && Array.isArray(obj.eps)){
                 var parse = function(value){
-                    for (var i=0; i<episodeModel.count; i++){
+                    for (i=0; i<episodeModel.count; i++){
                         if (episodeModel.get(i).id == value.id){
-                            var prop = {
+                            prop = {
                                 view_status_id: value.status.id,
                                 view_status_name: value.status.cn_name
                             };
@@ -37,9 +46,45 @@ Item {
     CommonDialog {
         id: boxDialog;
 
-        function setData(index){
+        property variant currentData: null;
 
+        function setData(data){
+            currentData = data;
+            var checkedIndex;
+            switch (data.view_status_id){
+            case 1: checkedIndex = 2; break;
+            case 2: checkedIndex = 0; break;
+            case 3: checkedIndex = 3; break;
+            default: checkedIndex = 4; break;
+            }
+            buttonRow.checkedButton = buttonRow.children[checkedIndex];
+            titleText = "ep." + data.sort + "  " + data.name;
+            if (data.name_cn != ""){
+                boxTitleLabel.text = "中文标题：" + data.name_cn;
+            } else {
+                boxTitleLabel.text = "";
+            }
+            boxTimeLabel.text = "首播：" + data.airdate;
         }
+
+        onAccepted: {
+            var option = buttonRow.checkedButton.objectName;
+            var url, post = null;
+            if (option == "watchedto"){
+                url = "/subject/"+sid+"/update/watched_eps";
+                post = { "watched_eps": currentData.sort };
+            } else {
+                url = "/ep/"+currentData.id+"/status/"+option;
+            }
+            var callback = function(){
+                loading = false;
+                loadDetail();
+            }
+            loading = true;
+            core().api(url, true, post, {}, callback);
+        }
+
+        onButtonClicked: if (index == 0) accept();
 
         buttonTexts: ["确认", "取消"];
 
@@ -63,6 +108,30 @@ Item {
                         objectName: "watched";
                         text: "看过";
                     }
+                    ToolButton {
+                        objectName: "watchedto";
+                        text: "看到";
+                    }
+                    ToolButton {
+                        objectName: "queue";
+                        text: "想看";
+                    }
+                    ToolButton {
+                        objectName: "drop";
+                        text: "抛弃";
+                    }
+                    ToolButton {
+                        objectName: "remove";
+                        text: "撤销";
+                    }
+                }
+                Label {
+                    id: boxTitleLabel;
+                    text: " ";
+                }
+                Label {
+                    id: boxTimeLabel;
+                    text: " ";
                 }
             }
         }
@@ -93,6 +162,7 @@ Item {
                 anchors.fill: parent;
                 onClicked: {
                     if (!loading){
+                        boxDialog.setData(model);
                         boxDialog.open();
                     }
                 }
@@ -100,10 +170,26 @@ Item {
 
             Rectangle {
                 id: cell;
+                property int vsi: view_status_id;
+                onVsiChanged: cell.color = getColor();
+
                 anchors.centerIn: parent;
                 width: platformStyle.graphicSizeLarge;
                 height: platformStyle.graphicSizeLarge;
-                color: view_status_id == 0 ? "#66ccff" : "#1080dd";
+                Component.onCompleted: cell.color = getColor();
+
+                function getColor(){
+                    switch (view_status_id){
+                    case 1: return "#f09199";
+                    case 2: return "#1080dd";
+                    case 3: return "#d2d2d2";
+                    }
+                    if (play_status == "NA"){
+                        return "#7f7f7f";
+                    } else {
+                        return "#66ccff";
+                    }
+                }
             }
 
             Label {

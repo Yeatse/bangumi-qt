@@ -67,6 +67,9 @@ Flickable {
     onMovementStarted: webView.renderingEnabled = false;
 
     onMovementEnded: webView.renderingEnabled = true;
+
+    boundsBehavior: Flickable.DragOverBounds;
+
     PinchArea {
         id: pinchArea
         anchors.fill: parent

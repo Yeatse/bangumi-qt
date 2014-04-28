@@ -88,7 +88,10 @@ MyPage {
                 margins: platformStyle.paddingMedium;
                 verticalCenter: parent.verticalCenter;
             }
-            onCleared: getlist();
+            onCleared: {
+                searchText = "";
+                getlist();
+            }
         }
         Button {
             id: searchButton;
@@ -185,6 +188,14 @@ MyPage {
                 onClicked: getlist("next");
             }
         }
+    }
+
+    ScrollBar {
+        anchors {
+            right: view.right;
+            top: view.top;
+        }
+        flickableItem: view;
     }
 
     onStatusChanged: {

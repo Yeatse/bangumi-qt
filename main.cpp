@@ -33,7 +33,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     if (translator.load(app->applicationName()+"_"+locale, ":/i18n/"))
         app->installTranslator(&translator);
 
-#if 0
+#if 1
     QNetworkProxy proxy;
     proxy.setType(QNetworkProxy::HttpProxy);
     proxy.setHostName("192.168.1.64");

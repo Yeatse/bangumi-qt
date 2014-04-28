@@ -12,6 +12,7 @@ PageStackWindow {
 
     showStatusBar: true;
     showToolBar: true;
+    platformSoftwareInputPanelEnabled: true;
 
     initialPage: MainPage {
         id: mainPage;

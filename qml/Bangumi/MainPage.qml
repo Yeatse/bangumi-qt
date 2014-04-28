@@ -113,10 +113,21 @@ MyPage {
         id: mainMenu;
         MenuLayout {
             MenuItem {
-                text: "设置";
+                property variant aboutDialog: null;
+                text: "关于";
+                onClicked: {
+                    if (!aboutDialog){
+                        aboutDialog = Qt.createComponent("AboutDialog.qml").createObject(mainPage);
+                    }
+                    aboutDialog.open();
+                }
             }
             MenuItem {
-                text: "关于";
+                text: "登出";
+                onClicked: {
+                    core().clearAuth(true);
+                    signalCenter.requestLogin();
+                }
             }
         }
     }

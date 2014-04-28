@@ -8,10 +8,12 @@ class NativeFunc : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int qtVersion READ qtVersion CONSTANT FINAL)
+    Q_PROPERTY(QString appVersion READ appVersion CONSTANT FINAL)
 
 public:
     explicit NativeFunc(QObject *parent = 0);
     int qtVersion() const;
+    QString appVersion() const;
 
     Q_INVOKABLE void setSetting(const QString &key, const QVariant &value);
     Q_INVOKABLE QVariant getSetting(const QString &key, const QVariant &defaultValue = QVariant()) const;

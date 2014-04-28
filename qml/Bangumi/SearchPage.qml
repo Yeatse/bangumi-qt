@@ -5,25 +5,36 @@ MyPage {
     id: page;
 
     property string searchText: "";
-    property int totalCount: 0;
+    property int pageIndex: 0;
+    property bool hasMore: false;
 
     function getlist(option){
         if (searchText == ""){
             searchModel.clear();
+            pageIndex = 0;
+            hasMore = false;
             return;
         }
-        loading = true;
-        var url = "/search/subject/"+searchText;
-        var get = { "start": 0, "max_results": 20, "responseGroup": "medium" };
-        if (option == "next"){
-            get.start = searchModel.count;
+        option = option||"renew";
+        var reqPage;
+        if (option == "renew"){
+            pageIndex = 0;
+            reqPage = 0;
+        } else {
+            reqPage = pageIndex + 1;
         }
+        var url = "/search/subject/"+searchText;
+        var get = { "start": reqPage*20, "max_results": 20, "responseGroup": "medium" };
+
         var callback = function (obj){
             loading = false;
-            totalCount = 0;
-            if (option != "next") searchModel.clear();
+            hasMore = false;
+            if (option == "renew"){
+                searchModel.clear();
+            }
             if (obj != null && Array.isArray(obj.list)){
-                totalCount = obj.results;
+                pageIndex = reqPage;
+                hasMore = (reqPage+1)*20 < obj.results;
                 var parse = function(value){
                     var imageGrid = "";
                     if (value.images != null){
@@ -36,13 +47,15 @@ MyPage {
                         type: value.type,
                         doing_count: value.collection.doing,
                         collect_count: value.collection.collect,
-                        image_grid: imageGrid
+                        image_grid: imageGrid,
+                        url: value.url
                     }
                     searchModel.append(prop);
                 }
                 obj.list.forEach(parse);
             }
         }
+        loading = true;
         core().api(url, false, null, get, callback);
     }
 
@@ -57,6 +70,7 @@ MyPage {
         id: viewHeader;
         width: parent.width;
         height: privateStyle.tabBarHeightPortrait;
+        z: view.z + 1;
         BorderImage {
             anchors.fill: parent;
             source: privateStyle.imagePath("qtg_fr_tab_bar");
@@ -74,6 +88,7 @@ MyPage {
                 margins: platformStyle.paddingMedium;
                 verticalCenter: parent.verticalCenter;
             }
+            onCleared: getlist();
         }
         Button {
             id: searchButton;
@@ -81,8 +96,8 @@ MyPage {
                 right: parent.right; rightMargin: platformStyle.paddingMedium;
                 verticalCenter: parent.verticalCenter;
             }
-            text: "搜索";
             platformInverted: true;
+            text: "搜索";
             onClicked: {
                 searchText = searchInput.text;
                 getlist();
@@ -97,15 +112,21 @@ MyPage {
         }
         model: ListModel { id: searchModel; }
         delegate: ListItem {
-            id: root;
+            id: listItem;
             implicitHeight: 96;
-            onClicked: pageStack.push(Qt.resolvedUrl("SubjectPage.qml"), { sid: model.id })
+            onClicked: {
+                if (type == 2){
+                    pageStack.push(Qt.resolvedUrl("SubjectPage.qml"), { sid: model.id });
+                } else {
+                    signalCenter.enterUrl(url);
+                }
+            }
 
             Image {
                 id: logo;
                 anchors {
-                    left: root.paddingItem.left;
-                    top: root.paddingItem.top;
+                    left: listItem.paddingItem.left;
+                    top: listItem.paddingItem.top;
                 }
                 width: 48;
                 height: 48;
@@ -123,7 +144,7 @@ MyPage {
                 anchors {
                     left: logo.right;
                     leftMargin: platformStyle.paddingMedium;
-                    top: root.paddingItem.top;
+                    top: listItem.paddingItem.top;
                 }
                 role: "SubTitle";
                 text: name;
@@ -134,7 +155,34 @@ MyPage {
                     left: jpname.left;
                     top: jpname.bottom;
                 }
-                text: name_cn;
+                text: name_cn||name;
+            }
+
+            ListItemText {
+                anchors {
+                    left: jpname.left;
+                    bottom: listItem.paddingItem.bottom;
+                }
+                role: "SubTitle";
+                Component.onCompleted: {
+                    var typelist = ["书籍","番剧","音乐","游戏","","三次元"];
+                    text = typelist[type-1] + "  在看:" + doing_count + "  看过:" + collect_count;
+                }
+            }
+        }
+        footer: Item {
+            width: screen.width;
+            height: platformStyle.graphicSizeLarge;
+            visible: view.count > 0;
+            Button {
+                anchors {
+                    left: parent.left; right: parent.right;
+                    margins: platformStyle.paddingLarge;
+                    verticalCenter: parent.verticalCenter;
+                }
+                text: "继续加载";
+                enabled: !loading && hasMore;
+                onClicked: getlist("next");
             }
         }
     }

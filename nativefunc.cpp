@@ -1,6 +1,7 @@
 #include "nativefunc.h"
 #include <QDateTime>
 #include <QStringList>
+#include <QtGui/QApplication>
 
 NativeFunc::NativeFunc(QObject *parent) :
     QObject(parent),
@@ -21,6 +22,11 @@ int NativeFunc::qtVersion() const
     } else {
         return 0;
     }
+}
+
+QString NativeFunc::appVersion() const
+{
+    return qApp->applicationVersion();
 }
 
 void NativeFunc::setSetting(const QString &key, const QVariant &value)

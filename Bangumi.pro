@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-VERSION = 0.0.2
+VERSION = 1.0.0
 DEFINES += VER=\\\"$$VERSION\\\"
 
 QT += network webkit

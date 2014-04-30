@@ -46,9 +46,12 @@ Item {
     CommonDialog {
         id: boxDialog;
 
+        property int sortIndex: 0;
         property variant currentData: null;
 
-        function setData(data){
+        function setData(index){
+            sortIndex = index + 1;
+            var data = episodeModel.get(index);
             currentData = data;
             var checkedIndex;
             switch (data.view_status_id){
@@ -72,7 +75,7 @@ Item {
             var url, post = null;
             if (option == "watchedto"){
                 url = "/subject/"+sid+"/update/watched_eps";
-                post = { "watched_eps": currentData.sort };
+                post = { "watched_eps": sortIndex };
             } else {
                 url = "/ep/"+currentData.id+"/status/"+option;
             }
@@ -162,7 +165,7 @@ Item {
                 anchors.fill: parent;
                 onClicked: {
                     if (!loading){
-                        boxDialog.setData(model);
+                        boxDialog.setData(index);
                         boxDialog.open();
                     }
                 }

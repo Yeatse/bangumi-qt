@@ -59,6 +59,8 @@ MyPage {
         core().api(url, false, null, get, callback);
     }
 
+    title: "搜索";
+
     tools: ToolBarLayout {
         ToolButton {
             iconSource: "toolbar-back";

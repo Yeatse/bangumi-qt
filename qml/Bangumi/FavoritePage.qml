@@ -31,15 +31,16 @@ MyPage {
                     if (subject.images != null){
                         imageGrid = subject.images.grid;
                     }
+                    var progValue = subject.eps == 0 ? 0.5 : Math.min(Math.max(value.ep_status / subject.eps, 0), 1);
                     var prop = {
                         id: subject.id,
-                        name: subject.name_cn,
-                        progress_string: value.ep_status + "/" + subject.eps,
-                        progress_value: Math.min(Math.max(value.ep_status / subject.eps, 0), 1),
+                        name: subject.name_cn||subject.name,
+                        progress_string: value.ep_status + "/" + (subject.eps||"???"),
+                        progress_value: progValue,
                         day: "星期"+weekdays[subject.air_weekday-1],
                         image_grid: imageGrid,
                         watching_count: subject.collection.doing,
-                        flag: today ? "今日放映" : "其它"
+                        flag: today ? "星期"+weekdays[todayId-1] : "其它"
                     }
                     listModel.append(prop);
                     collections.push(subject.id);
